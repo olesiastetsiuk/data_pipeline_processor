@@ -21,6 +21,13 @@ aws_access_key_id = <aws_access_key_id>
 aws_secret_access_key = <aws_secret_access_key>
 region = us-west-2
 
-$: cd falcon_S3/app
-$: python3 init_engine.py
-``` 
+```
+## Ingest data
+...
+## Query data
+...
+## Transform data
+...
+## Service performance
+...
+## Further considerations
