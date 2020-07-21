@@ -1,14 +1,9 @@
 import psycopg2
 import pandas as pd
 
-from configs import postgres_config
+from data_pipeline_processor.data_workflow_api.init_cataloque import DbServiceBase
 from queries import sql_queries
 
-
-class DbServiceBase:
-
-    def __init__(self):
-        self.conn = psycopg2.connect(**db_config)
 
 class DbService(DbServiceBase):
     def __init__(self):

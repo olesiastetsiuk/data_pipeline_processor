@@ -92,5 +92,5 @@ def get_data_from_s3(file_key):
     
     """
 
-    #TODO 
+    #TODO put 1K to postgre, read line, create hash, add hash to new column in postgre, get pathes to file by name, add to Dynamo, save to s3 
 

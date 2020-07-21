@@ -2,6 +2,8 @@ import hashlib
 import json
 
 
+
+
 def get_image_meta_files_path(folder_path, name):
     """
     Gets path to image and meta file
