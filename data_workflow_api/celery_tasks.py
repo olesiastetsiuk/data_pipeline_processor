@@ -8,8 +8,10 @@ from celery import Celery
 from config import AWS_BUCKET_NAME, AWS_TABLE_NAME, UPLOAD_PATH, DOWNLOAD_PATH
 from utils import utils
 
+#from configs import DATASET_PATH
 
-app = Celery('tasks')
+
+app = Celery('celery_tasks')
 app.config_from_object('celeryconfig')
 
 
@@ -18,7 +20,7 @@ def put_data_to_s3(path):
     """Upload file into AWS S3 storage
     
         Note: 
-            Receives path, obtains md5 hash function of the meta-file,
+            Receives path, obtains md5 hash function of the json meta file,
             saves file_key (hash) and file_names for image and meta-file values in AWS DynamoDB,
             uploads files to AWS S3 storage.
     
@@ -29,25 +31,30 @@ def put_data_to_s3(path):
         db = boto3.resource('dynamodb')
         table = db.Table(AWS_TABLE_NAME)
 
-        utils.
-    
-        with open(meta_file_path, 'rb') as f:
-            hash_string = utils.md5(f)
-    
-        path, file_name = os.path.split(file_path)
-        table.put_item(
-            Item = {
-                'file_key': hash_string,
-                'meta_file_name': meta_file_name,
-                'image_file_name': image_file_name
-            })
-    
-        s3 = boto3.client('s3')
-        with open(file_path, 'rb') as f:
-            s3.upload_fileobj(f, AWS_BUCKET_NAME, hash_string)
-            #add seconf file
-    except ClientError as e:
-        hash_string = None
+        meta_files_path = path['meta_files']
+        imgs_files_path = path['images']
+
+        #iterate over rows get id, search for name in files, get paths
+        
+            with open(meta_file_path, 'rb') as f:
+                hash_string = utils.md5(f)
+        
+            path, file_name = os.path.split(file_path)
+            table.put_item(
+                Item = {
+                    'file_key': hash_string,
+                    'meta_file_name': meta_file_name,
+                    'image_file_name': image_file_name
+                })
+        
+            s3 = boto3.client('s3')
+            with open(file_path, 'rb') as f:
+                s3.upload_fileobj(f, AWS_BUCKET_NAME, hash_string)
+            
+                #add second file
+            #update column in styles table
+        except ClientError as e:
+            hash_string = None
 
     return hash_string
 

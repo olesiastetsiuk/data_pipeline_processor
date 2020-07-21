@@ -1,7 +1,8 @@
 import boto3
 from botocore.exceptions import ClientError
 
-from configs.aws import AWS_BUCKET_NAME, AWS_TABLE_NAME
+from configs import AWS_BUCKET_NAME, AWS_TABLE_NAME
+
 
 def init():
     """Initialize AWS services for the backend.
