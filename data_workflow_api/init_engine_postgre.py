@@ -83,6 +83,9 @@ class TableStyles(TableBase):
         self.conn.execute(query)
         pass
 
+    def add_column(self):
+        pass 
+    
     # def table_update(self,):
     #     pass
 

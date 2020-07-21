@@ -28,12 +28,14 @@ def init():
 
         table = db.create_table(
             AttributeDefinitions=[
-                {'AttributeName': 'file_key', 'AttributeType': 'S'}
+                {'AttributeName': 'file_key', 'AttributeType': 'S'},
+                {'AttributeName': 'file_name', 'AttributeType': 'S'},
 
             ],
             TableName=AWS_TABLE_NAME,
             KeySchema=[
-                {'AttributeName': 'file_key', 'KeyType': 'HASH'}
+                {'AttributeName': 'file_key', 'KeyType': 'HASH'},
+                {'AttributeName': 'file_name','KeyType': 'RANGE'}
             ],
             ProvisionedThroughput={
                 'ReadCapacityUnits': 5,

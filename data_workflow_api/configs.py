@@ -35,10 +35,15 @@ TABLE_QUERY = '''CREATE TABLE styles
           SEASON           TEXT    NOT NULL,
           YEAR           INT    NOT NULL,
           USAGE           TEXT    NOT NULL,
-          PRODUCTDISPLAYNAME           TEXT    NOT NULL,
-          DYNAMO_KEY           TEXT FOREIGN KEY  NOT NULL DEFAULT 'hash'); '''
+          PRODUCTDISPLAYNAME           TEXT    NOT NULL); '''
 
-INSERT_QUERY = 'INSERT INTO styles VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'
+CVS_INSERT_QUERY = 'INSERT INTO styles VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'
+
+add_columns = '''ALTER TABLE style
+ADD COLUMN META_DATA jsonb,
+ADD COLUMN VERSION ,
+ADD COLUMN HASH_KEY ;'''
+
 
 HASH_QUERY = 'SELECT id, dynamo_key FROM styles'
 
