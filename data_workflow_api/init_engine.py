@@ -1,19 +1,7 @@
 import boto3
 from botocore.exceptions import ClientError
 
-#from configs.aws import AWS_BUCKET_NAME, AWS_TABLE_NAME
-
-# AWS S3 bucket name
-AWS_BUCKET_NAME = 'fashionimages'
-# AWS DynamoDB table name
-AWS_TABLE_NAME = 'fashion_images'
-# Path for temporary storage
-STORAGE_PATH = './data/'
-# Path for temporary storage uploaded files
-UPLOAD_PATH = STORAGE_PATH + '/upload/'
-# Path for temporary storage downloaded files
-DOWNLOAD_PATH = STORAGE_PATH + '/download/'
-
+from configs.aws import AWS_BUCKET_NAME, AWS_TABLE_NAME
 
 def init():
     """Initialize AWS services for the backend.

@@ -45,6 +45,7 @@ def put_data_to_s3(path):
         s3 = boto3.client('s3')
         with open(file_path, 'rb') as f:
             s3.upload_fileobj(f, AWS_BUCKET_NAME, hash_string)
+            #add seconf file
     except ClientError as e:
         hash_string = None
 

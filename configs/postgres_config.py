@@ -1,7 +1,7 @@
 #Postgre configs
 POSTGRES_CONFIG = {
     'user' : 'Postgres',
-    'password' : 'root',
+    'password' : '',
     'host' : 'localhost',
     'dbname' : 'postgres_db'
 }
@@ -19,6 +19,8 @@ TABLE_QUERY = '''CREATE TABLE styles
           USAGE           TEXT    NOT NULL,
           PRODUCTDISPLAYNAME           TEXT    NOT NULL,
           DYNAMO_KEY           TEXT FOREIGN KEY  NOT NULL DEFAULT 'hash'); '''
+
+INSERT_QUERY = 'INSERT INTO styles VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'
 
 
 
