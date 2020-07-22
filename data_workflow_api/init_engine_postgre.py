@@ -16,21 +16,19 @@ class TableBase:
     def cursor(self):
         return self.conn.cursor()
     
-    @property
-    def table_name(self, name):
-        return name
-    
     def __enter__(self):
         self.startup()
         return self
     
-    def __exit__(self):
+    def __exit__(self, exc_type, exc_value, tb):
+        if exc_type is not None:
+            traceback.print_exception(exc_type, exc_value, tb)
         self.shutdown()
     
     def startup(self):
         print(self.conn.get_dsn_parameters(),"\n")
     
-    def shutdown(self):
+    def shutdown(self):        
         self.cursor.close()
         self.conn.close()
         print("PostgreSQL connection is closed")
@@ -39,26 +37,15 @@ class TableBase:
         pass
 
 class TableStyles(TableBase):
-    def __init__(self):
-        super().__init__()    
-
-    @property
-    def table_name(self, name):
-        return name
+    def __init__(self, db_service):
+        super().__init__(db_service)
     
-    @property
-    def cursor(self):
-        return self._conn.cursor()
-    
-    # def tables(self): #check if table name exists
-    #     pass
-    
-    def create_table(self, table_query):
+    def create_table(self, table_query, table_name):
         try:
 
             self.cursor.execute(table_query)
             self.conn.commit()            
-            print("Table '{}'created successfully in PostgreSQL.".format(self.table_name))
+            print("Table '{}'created successfully in PostgreSQL.".format(table_name))
 
         except (Exception, psycopg2.DatabaseError) as error :
             print ("Error while creating PostgreSQL table", error)
@@ -86,14 +73,13 @@ class TableStyles(TableBase):
     def add_column(self):
         pass 
     
-    # def table_update(self,):
-    #     pass
+    def table_update(self,):
+        pass
 
 if __name__ == "__main__":
-    db_service = DbServiceBase(POSTGRES_CONFIG)
+    db_service = DbServiceBase(POSTGRES_CONFIG)    
     with TableStyles(db_service) as table:
-        tabel_name = table.table_name(TABLE_NAME)
-        table.create_table(TABLE_QUERY)
+        table.create_table(TABLE_QUERY, TABLE_NAME)
 
 
 

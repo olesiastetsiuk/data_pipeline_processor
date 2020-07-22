@@ -18,10 +18,10 @@ DATASET_PATH = {
 
 #Postgre configs
 POSTGRES_CONFIG = {
-    'user' : 'Postgres',
-    'password' : '',
+    'user' : 'postgres',
+    'password' : '98052',
     'host' : 'localhost',
-    'dbname' : 'postgres_db'
+    'dbname' : 'im'
 }
 
 TABLE_NAME = 'styles'
