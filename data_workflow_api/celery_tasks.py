@@ -139,4 +139,4 @@ def get_data_from_s3(file_key):
     
     """
 
-    #TODO put json to postgre, add search inside jsons in postgre
+    #TODO put json to postgre, add search inside jsons in postgre, add creating index from hash column 

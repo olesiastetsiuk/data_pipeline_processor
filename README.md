@@ -22,6 +22,14 @@ aws_secret_access_key = <aws_secret_access_key>
 region = us-west-2
 
 ```
+## Create tables
+### 
+```bash
+$: cd data_pipeline_processor/data_workflow_api
+$: python3 init_engine_aws.py
+$: python3 init_engine_postgre.py
+
+```
 ## Ingest data
 ...
 ## Query data

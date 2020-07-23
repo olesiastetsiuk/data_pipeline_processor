@@ -1,10 +1,10 @@
 import psycopg2
 import csv
 
-from configs import POSTGRES_CONFIG, TABLE_NAME, TABLE_QUERY
+from configs import POSTGRES_CONFIG, TABLE_NAME, TABLE_QUERY, DATASET_PATH, CVS_ROW_INSERT_QUERY
 
 
-class DbServiceBase:
+class DbServiceConnect:
     def __init__(self, postgres_config):
         self.conn = psycopg2.connect(**postgres_config)    
 
@@ -50,36 +50,62 @@ class TableStyles(TableBase):
         except (Exception, psycopg2.DatabaseError) as error :
             print ("Error while creating PostgreSQL table", error)
         
-    def bulk_update(self, csv_path, insert_query):
+    def update_table_from_cvs_by_row(self, csv_path, insert_query):
         try:
 
             with open(csv_path, 'r') as data:
                 reader = csv.reader(data)
-                next(reader) 
+                next(reader)
+                count = 0
                 for row in reader:
                     self.cursor.execute(
                     insert_query,
                     row
                 )
-            self.conn.commit()
+                    self.conn.commit()
+                    count += 1 
+
+                print("'{}' records updated successfully ".format(count))
 
         except (Exception, psycopg2.DatabaseError) as error :
-            print ("Error bulk update PostgreSQL table", error)
-    
-    def table_query(self, query):
-        self.conn.execute(query)
-        pass
+            print ("Error while csv update by row PostgreSQL table", error)
+        
+    def bulk_cvs_update_table(self, csv_path, table_name):
+        try:
+            with open(csv_path, 'r') as data: 
+                reader = csv.reader(data)
+                next(reader)
+                self.cursor.copy_from(data, table_name, sep=',', size=8192)
+                self.conn.commit()            
 
-    def add_column(self):
-        pass 
+        except (Exception, psycopg2.DatabaseError) as error :
+            print ("Error while csv bulk update PostgreSQL table", error)
     
-    def table_update(self,):
-        pass
+    def query_table(self, query):
+        try:
+            self.cursor.execute(query)
+            images_records = self.cursor.fetchall() #fetchone(), fetchmany(SIZE) 
+            print("Query '{}' successfully executed in PostgreSQL.".format(query))
+
+        except (Exception, psycopg2.DatabaseError) as error :
+            print ("Error while fetching data from PostgreSQL", error)
+    
+    def update_table_records(self, update_query, *args): #last arg image id
+        try:
+            self.cursor.execute(update_query, args)
+            self.conn.commit()
+            count = self.cursor.rowcount
+            print("'{}'records updated successfully ".format(count))
+
+        except (Exception, psycopg2.Error) as error:
+            print("Error in update operation", error)
 
 if __name__ == "__main__":
-    db_service = DbServiceBase(POSTGRES_CONFIG)    
+    db_service = DbServiceConnect(POSTGRES_CONFIG)    
     with TableStyles(db_service) as table:
-        table.create_table(TABLE_QUERY, TABLE_NAME)
+        #table.create_table(TABLE_QUERY, TABLE_NAME)
+        #table.bulk_cvs_update_table(DATASET_PATH['styles.csv'], TABLE_NAME)
+        table.update_table_from_cvs_by_row(DATASET_PATH['styles.csv'], CVS_ROW_INSERT_QUERY)
 
 
 

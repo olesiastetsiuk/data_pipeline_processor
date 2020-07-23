@@ -1,2 +1,4 @@
 psycopg2-binary==2.8.5
+albumentations==0.4.6
+
 
