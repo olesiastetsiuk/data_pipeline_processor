@@ -10,6 +10,12 @@ UPLOAD_PATH = STORAGE_PATH + '/upload/'
 # Path for storage downloaded files
 DOWNLOAD_PATH = STORAGE_PATH + '/download/'
 
+# DATASET_PATH = {
+#     'styles.csv': STORAGE_PATH + 'fashion_dataset/styles_sample.csv', 
+#     'images': STORAGE_PATH+ 'fashion_dataset/images/',
+#     'meta_files': STORAGE_PATH+ 'fashion_dataset/styles/'
+# }
+
 DATASET_PATH = {
     'styles.csv': STORAGE_PATH + 'fashion_dataset/styles_sample.csv', 
     'images': STORAGE_PATH+ 'fashion_dataset/images/',
@@ -44,15 +50,15 @@ TABLE_QUERY = '''CREATE TABLE test
 
 CVS_ROW_INSERT_QUERY = 'INSERT INTO test VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
 
-#BULK_CVS_UPDATE = 'COPY test (id,gender,masterCategory,subCategory,articleType,baseColour,season,year,usage,productDisplayName) FROM %s DELIMITER ','CSV HEADER;
+BULK_CVS_UPDATE = 'COPY test (id,gender,masterCategory,subCategory,articleType,baseColour,season,year,usage,productDisplayName) FROM %s DELIMITER ','CSV HEADER;'
 
 META_DATA_HASH_KEY_UPDATE_QUERY = 'UPDATE test set META_DATA = %s, HASH_KEY = %s where ID = %s'
 
 META_DATA_UPDATE_QUERY = 'UPDATE test set META_DATA = %s where ID = %s'
+CREATE_HASH_INDEX_QUERY = 
 
 
-
-HASH_QUERY = 'SELECT id, dynamo_key FROM test'
+HASH_QUERY = 'SELECT id, HASH_KEY FROM test'
 
 
 

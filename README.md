@@ -31,6 +31,16 @@ $: python3 init_engine_postgre.py
 
 ```
 ## Ingest data
+
+* Run celery:
+```bash
+$: cd data_pipeline_processor/data_workflow_api
+$: celery -A celery tasks worker --loglevel=info
+```
+
+* Run application:
+```bash
+$: cd data_pipeline_processor/data_workflow_api/
 ...
 ## Query data
 ...

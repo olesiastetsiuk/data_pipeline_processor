@@ -82,13 +82,15 @@ class TableStyles(TableBase):
             print ("Error while csv bulk update PostgreSQL table", error)
     
     def query_table(self, query):
+        records = None
         try:
             self.cursor.execute(query)
-            images_records = self.cursor.fetchall() #fetchone(), fetchmany(SIZE) 
+            records = self.cursor.fetchall() #fetchone(), fetchmany(SIZE) 
             print("Query '{}' successfully executed in PostgreSQL.".format(query))
 
         except (Exception, psycopg2.DatabaseError) as error :
             print ("Error while fetching data from PostgreSQL", error)
+        return records
     
     def update_table_records(self, update_query, *args): #last arg image id
         try:
@@ -103,9 +105,7 @@ class TableStyles(TableBase):
 if __name__ == "__main__":
     db_service = DbServiceConnect(POSTGRES_CONFIG)    
     with TableStyles(db_service) as table:
-        #table.create_table(TABLE_QUERY, TABLE_NAME)
-        #table.bulk_cvs_update_table(DATASET_PATH['styles.csv'], TABLE_NAME)
-        table.update_table_from_cvs_by_row(DATASET_PATH['styles.csv'], CVS_ROW_INSERT_QUERY)
+        table.create_table(TABLE_QUERY, TABLE_NAME)
 
 
 

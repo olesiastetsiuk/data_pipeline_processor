@@ -1,6 +1,9 @@
 import hashlib
 import json
 
+def find_in_dir(dirname):
+    return [os.path.join(dirname, fname) for fname in sorted(os.listdir(dirname))]
+
 
 def read_chunks(f, chunk_size=8192):
     """ 
