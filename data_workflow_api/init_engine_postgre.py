@@ -1,20 +1,18 @@
 import psycopg2
 import csv
+import traceback
 
-from configs import POSTGRES_CONFIG, TABLE_NAME, TABLE_QUERY, DATASET_PATH, CVS_ROW_INSERT_QUERY
+from configs import POSTGRES_CONFIG, TABLE_NAME, CREATE_TABLE_QUERY, DATASET_PATH, CVS_ROW_INSERT_QUERY
 
 
 class DbServiceConnect:
     def __init__(self, postgres_config):
-        self.conn = psycopg2.connect(**postgres_config)    
+        self.conn = psycopg2.connect(**postgres_config)  
 
 class TableBase:
     def __init__(self, dbservice):
         self.conn = dbservice.conn
-    
-    @property
-    def cursor(self):
-        return self.conn.cursor()
+        self.cursor =  self.conn.cursor()
     
     def __enter__(self):
         self.startup()
@@ -26,7 +24,7 @@ class TableBase:
         self.shutdown()
     
     def startup(self):
-        print(self.conn.get_dsn_parameters(),"\n")
+        print("Connection dsn parameters {}".format(self.conn.get_dsn_parameters(),"\n"))
     
     def shutdown(self):        
         self.cursor.close()
@@ -82,30 +80,46 @@ class TableStyles(TableBase):
             print ("Error while csv bulk update PostgreSQL table", error)
     
     def query_table(self, query):
+
         records = None
-        try:
+        try:          
             self.cursor.execute(query)
-            records = self.cursor.fetchall() #fetchone(), fetchmany(SIZE) 
-            print("Query '{}' successfully executed in PostgreSQL.".format(query))
+            if self.cursor.statusmessage:
+                records = self.cursor.fetchall() #fetchone(), fetchmany(SIZE)
+                print("Query '{}' successfully executed in PostgreSQL.".format(query))
+            else: 
+                print("Nothing to fetch by query {}".format(query))
 
         except (Exception, psycopg2.DatabaseError) as error :
             print ("Error while fetching data from PostgreSQL", error)
         return records
     
-    def update_table_records(self, update_query, *args): #last arg image id
-        try:
-            self.cursor.execute(update_query, args)
+    def update_table_records(self, update_query, *args): #id must be the last
+        try:            
+            self.cursor.execute(update_query, *args)
             self.conn.commit()
             count = self.cursor.rowcount
             print("'{}'records updated successfully ".format(count))
 
         except (Exception, psycopg2.Error) as error:
             print("Error in update operation", error)
+        
+    def create_index_from_column(self, create_index_query, column_name):
+        try:
+            self.cursor.execute(create_index_query)
+            self.conn.commit()
+            print("'{}'index created successfully ".format(column_name))
+
+        except (Exception, psycopg2.Error) as error:
+            print("Error in create index operation", error)
+
 
 if __name__ == "__main__":
     db_service = DbServiceConnect(POSTGRES_CONFIG)    
     with TableStyles(db_service) as table:
-        table.create_table(TABLE_QUERY, TABLE_NAME)
+        table.create_table(CREATE_TABLE_QUERY, TABLE_NAME)
+
+
 
 
 

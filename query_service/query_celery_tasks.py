@@ -7,17 +7,37 @@ from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
 from celery import Celery
 
+from data_workflow_api import celeryconfig
+from data_workflow_api.init_engine_postgre import DbServiceConnect, TableStyles
+
+
 from configs import AWS_BUCKET_NAME, AWS_TABLE_NAME, UPLOAD_PATH, DOWNLOAD_PATH, POSTGRES_CONFIG, TABLE_NAME, DATASET_PATH, META_DATA_HASH_KEY_UPDATE_QUERY, HASH_QUERY
-from utils import utils
+#from utils import utils
 
 
 app = Celery('query_celery_tasks')
 app.config_from_object('celeryconfig')
 
+def parse_json_column_postgre():
+    pass
 
 
-@app.task
-    def update_file(file_key, file_path):
+def get_query_for_statistics(query, return_pandas_df=False):
+    try 
+    pass
+
+
+def get_queried_images():
+    pass
+
+def put_images_on_s3():
+    pass
+
+
+
+
+#@app.task
+    def update_file_postgre(file_key, file_path):
         """Update file from AWS S3 storage
     
         Note: 
@@ -27,7 +47,7 @@ app.config_from_object('celeryconfig')
     """
 
 
-@app.task
+#@app.task
 def get_data_from_s3(file_key):
     """Download file from AWS S3 storage
     

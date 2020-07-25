@@ -1,18 +1,33 @@
 import os
 import json
 
+import hashlib
 
 import boto3
 from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
 from celery import Celery
 
-from configs import AWS_BUCKET_NAME, AWS_TABLE_NAME, UPLOAD_PATH, DOWNLOAD_PATH, POSTGRES_CONFIG, TABLE_NAME, DATASET_PATH, META_DATA_HASH_KEY_UPDATE_QUERY, HASH_QUERY
-from utils import utils
+from psycopg2.extras import Json
 
+from init_engine_postgre import DbServiceConnect, TableStyles
+
+from configs import AWS_BUCKET_NAME, AWS_TABLE_NAME, POSTGRES_CONFIG, DATASET_PATH, TABLE_NAME
+from configs import CVS_ROW_INSERT_QUERY, META_DATA_HASH_KEY_UPDATE_QUERY, HASH_QUERY, CREATE_HASH_INDEX_QUERY, SELECT_META_HASH_ID_QUERY 
+#from utils import utils
 
 app = Celery('celery_tasks')
 app.config_from_object('celeryconfig')
+
+def md5(f):
+    """
+    Obtains md5 hash function of file-like object
+    
+    """
+
+    h = hashlib.md5(f)    
+    return h.hexdigest()
+
 
 @app.task
 def load_csv_to_postgre(path, in_bulk = False):
@@ -25,9 +40,10 @@ def load_csv_to_postgre(path, in_bulk = False):
         db_service = DbServiceConnect(POSTGRES_CONFIG)
         with TableStyles(db_service) as table:
             if in_bulk: 
-                table.bulk_cvs_update_table(DATASET_PATH['styles.csv'], TABLE_NAME) #hardcoded tablename, could be refactored to more general case
+                table.bulk_cvs_update_table(DATASET_PATH['styles'], TABLE_NAME) #hardcoded tablename, could be refactored to more general case
             else: 
-                table.update_table_from_cvs_by_row(DATASET_PATH['styles.csv'], CVS_ROW_INSERT_QUERY) #hardcoded insert query, same
+                table.update_table_from_cvs_by_row(DATASET_PATH['styles'], CVS_ROW_INSERT_QUERY) #hardcoded insert query, same
+                #TODO fix for nonexisting values in columns
     except Exception as e:
         print("Exception '{}' happened during load cvs to postgre celery task".format(e))
     
@@ -40,26 +56,27 @@ def load_meta_data_to_postgre(path):
         Receives path to folder with meta files and images, iterates over row updates columns
     """
 
-    meta_files_path = path['meta_files']
-    imgs_files_path = path['images']
+    meta_files_path = path +'/styles/'
+    imgs_files_path = path +'/images/'
 
     try:
         db_service = DbServiceConnect(POSTGRES_CONFIG)
         with TableStyles(db_service) as table:
-            records = query_table(META_DATA_HASH_KEY_UPDATE_QUERY)
+            records = table.query_table(SELECT_META_HASH_ID_QUERY)
             for record in records:
-                image_id = record['id']
+                image_id = record[0]
                 meta_json_path = meta_files_path+image_id+'.json'
                 image_path = imgs_files_path+image_id+'.jpg'
-                with open(meta_json_path) as meta_file:
-                    meta_data = json.load(meta_file)
-                    with open(image_path, 'rb') as image_file:
-                        hash_string = utils.md5(image_file)
-                        table.update_table_records(META_DATA_HASH_KEY_UPDATE_QUERY, meta_data, hash_string, image_id)
+                with open(meta_json_path) as json_data:
+                    meta_data = json.load(json_data)
+                    image_file = open(image_path, 'rb').read()
+                    hash_string = md5(image_file)
+                    table.update_table_records(META_DATA_HASH_KEY_UPDATE_QUERY, (json.dumps(meta_data), hash_string, image_id))
+            table.create_index_from_column(CREATE_HASH_INDEX_QUERY, 'HASH_KEY')
     except Exception as e:
         print("Exception '{}' happened during updating meta and hash columns in postgre celery task".format(e))
 
-# task to put single data on s3, get hash from postgre
+
 @app.task
 def put_data_s3_by_record_from_query(path):
 
@@ -72,46 +89,41 @@ def put_data_s3_by_record_from_query(path):
     
     """
 
-    imgs_files_path = path['images']
+    #imgs_files_path = path['images']
+    imgs_files_path = path +'/images/'
 
     try:
         db_service = DbServiceConnect(POSTGRES_CONFIG)
         with TableStyles(db_service) as table:
-            records = query_table(HASH_QUERY)
-            for record in records:
-                image_id = record['id']
-                hash_string = record['hash_key']
-                image_path = imgs_files_path+image_id+'.jpg'
-                db = boto3.resource('dynamodb')
-                table = db.Table(AWS_TABLE_NAME)
-                table.put_item(
-                        Item = {
-                            'file_key': hash_string,
-                            'image_file_name': image_file_name
-                        })                
-                s3 = boto3.client('s3')
-                with open(image_path, 'rb') as f:
-                    s3.upload_fileobj(f, AWS_BUCKET_NAME, hash_string)
+            records = table.query_table(HASH_QUERY)
+            if records: 
+                for record in records:
+                    image_id = record[0]
+                    hash_string = record[-1]
+                    image_path = imgs_files_path+image_id+'.jpg'
+                    db = boto3.resource('dynamodb')
+                    table = db.Table(AWS_TABLE_NAME)
+                    table.put_item(
+                            Item = {
+                                'file_key': hash_string,
+                                'file_name': image_id
+                            })                
+                    s3 = boto3.client('s3')
+                    with open(image_path, 'rb') as f:
+                        s3.upload_fileobj(f, AWS_BUCKET_NAME, hash_string)
+                        print("Image {} uploaded to S3".format(image_id))
 
     except ClientError as e:
-        hash_string = None
+        print("Error {} while put data to S3".format(e))
 
 
 
-#task to pit bulk on s3
-#task to query
+put_data_s3_by_record_from_query('/home/olysavra/datasqueezer/IM/139630_329006_bundle_archive/fashion-dataset')
 
-
-# task to get single fron s3
-
-# task to get bulk from s3
-
-#task to update json
-# task to bulk update postgre
-
-
-
-
-
-
-    #TODO put json to postgre, add search inside jsons in postgre, add creating index from hash column 
+# csv to dummy vars
+# folder with jsons to table with id and JSONB column to bulk load
+# load csv by chunks
+# folder with images to table with id and hash value to bulk load
+# how to BatchWriteItem + batch load on s3? 
+# update dynamo only by images + hash without postgre query - how to preserve consistency? 
+# lambda usages

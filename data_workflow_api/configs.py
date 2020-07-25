@@ -1,8 +1,8 @@
 #AWS configs
 # AWS S3 bucket name
-AWS_BUCKET_NAME = 'S3'
+AWS_BUCKET_NAME = 'fashionstyles'
 # AWS DynamoDB table name
-AWS_TABLE_NAME = 'test'
+AWS_TABLE_NAME = 'fashionstyles'
 # Path for temporary storage
 STORAGE_PATH = '/home/olysavra/datasqueezer/data_pipeline/data_pipeline_processor/data/'
 # Path for storage uploaded files
@@ -17,24 +17,25 @@ DOWNLOAD_PATH = STORAGE_PATH + '/download/'
 # }
 
 DATASET_PATH = {
-    'styles.csv': STORAGE_PATH + 'fashion_dataset/styles_sample.csv', 
-    'images': STORAGE_PATH+ 'fashion_dataset/images/',
-    'meta_files': STORAGE_PATH+ 'fashion_dataset/styles/'
+    'styles': STORAGE_PATH + 'fashion_dataset/styles_sample.csv', 
+    'images': '/home/olysavra/datasqueezer/IM/139630_329006_bundle_archive/'+ 'fashion_dataset/images/',
+    'meta_files': '/home/olysavra/datasqueezer/IM/139630_329006_bundle_archive/' + 'fashion_dataset/styles/'
 }
 
 #Postgre configs
 POSTGRES_CONFIG = {
     'user' : 'postgres',
-    'password' : '98052',
+    'password' : 98052,
     'host' : 'localhost',
-    'dbname' : 'im'
+    'dbname' : 'im',
+    'port': 5432
 }
 
 TABLE_NAME = 'test'
 
 #id,gender,masterCategory,subCategory,articleType,baseColour,season,year,usage,productDisplayName
 
-TABLE_QUERY = '''CREATE TABLE test
+CREATE_TABLE_QUERY = '''CREATE TABLE test
           (ID TEXT NOT NULL,
           GENDER           TEXT    NOT NULL,
           MASTERCATEGORY           TEXT    NOT NULL,
@@ -48,17 +49,17 @@ TABLE_QUERY = '''CREATE TABLE test
           META_DATA JSONB,
           HASH_KEY TEXT); '''
 
-CVS_ROW_INSERT_QUERY = 'INSERT INTO test VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
+CVS_ROW_INSERT_QUERY = "INSERT INTO test VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
-BULK_CVS_UPDATE = 'COPY test (id,gender,masterCategory,subCategory,articleType,baseColour,season,year,usage,productDisplayName) FROM %s DELIMITER ','CSV HEADER;'
+BULK_CVS_UPDATE = "COPY test (id,gender,masterCategory,subCategory,articleType,baseColour,season,year,usage,productDisplayName) FROM %s DELIMITER ','CSV HEADER;"
 
-META_DATA_HASH_KEY_UPDATE_QUERY = 'UPDATE test set META_DATA = %s, HASH_KEY = %s where ID = %s'
+SELECT_META_HASH_ID_QUERY = "select * from test"
 
-META_DATA_UPDATE_QUERY = 'UPDATE test set META_DATA = %s where ID = %s'
-CREATE_HASH_INDEX_QUERY = 
+META_DATA_HASH_KEY_UPDATE_QUERY = "Update test set meta_data = %s, hash_key = %s where id = %s"
 
+CREATE_HASH_INDEX_QUERY = "CREATE INDEX dynamo_hash_key ON test USING hash (HASH_KEY);"
 
-HASH_QUERY = 'SELECT id, HASH_KEY FROM test'
+HASH_QUERY = "SELECT id, HASH_KEY FROM test"
 
 
 

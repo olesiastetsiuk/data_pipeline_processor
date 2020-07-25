@@ -20,29 +20,40 @@ $: cat ~/.aws/credentials
 aws_access_key_id = <aws_access_key_id>
 aws_secret_access_key = <aws_secret_access_key>
 region = us-west-2
-
 ```
-## Create tables
+## Create tables in DynamoDB and in Postgre
 ### 
 ```bash
 $: cd data_pipeline_processor/data_workflow_api
 $: python3 init_engine_aws.py
 $: python3 init_engine_postgre.py
-
 ```
 ## Ingest data
 
 * Run celery:
 ```bash
 $: cd data_pipeline_processor/data_workflow_api
-$: celery -A celery tasks worker --loglevel=info
+$: celery -A celery_tasks worker --loglevel=info
+```
+* Run tasks
+```bash
+$: cd data_pipeline_processor/data_workflow_api
+$: 
+```
+* Monitor workers with [flower](https://flower.readthedocs.io/en/latest/)
+
+```bash
+$: cd data_pipeline_processor/data_workflow_api
+$: celery -A celery_tasks flower --port=5555
 ```
 
-* Run application:
+## Query data and save results to a folder
+
 ```bash
-$: cd data_pipeline_processor/data_workflow_api/
-...
-## Query data
+$: cd data_pipeline_processor/query_service/
+$: celery -A query_celery_tasks worker --loglevel=info
+```
+
 ...
 ## Transform data
 ...
