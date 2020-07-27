@@ -63,16 +63,12 @@ def get_queried_data_from_s3_by_one(query, batch_size_for_postgre_query, folder_
                         file_name = None
 
 @app.task
-def update_meta_data_postgre(file_key, file_path):
-    """Update meta data in Postgre column 
-
-    Note: 
-        Receives image id, updated meta data, updates column
-
-"""
-
-@app.task
 def get_stat_for_query(query, chunksize, return_pandas_df=False):
+    """Gets queried results for calculation statistics.
+        Note:
+        Receives query, chunksize, if return_pandas_df is True, returns final dataframe merged from chunks.
+    """
+
     db_service = DbServiceConnect(POSTGRES_CONFIG)
     with TableStyles(db_service) as postgre_table:
         if return_pandas_df:
@@ -84,7 +80,15 @@ def get_stat_for_query(query, chunksize, return_pandas_df=False):
                 except StopIteration:
                     break
             return query_df
-        
+
+@app.task
+def update_meta_data_postgre(file_key, file_path):
+    """Update meta data in Postgre column 
+
+    Note: 
+        Receives image id, updated meta data, updates column
+
+"""       
         
     
 

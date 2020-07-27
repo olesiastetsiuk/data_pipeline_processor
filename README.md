@@ -40,6 +40,8 @@ $: celery -A celery_tasks worker --loglevel=info
 $: cd data_pipeline_processor/data_workflow_api
 $: 
 ```
+*HOWTO ingest data examples
+
 * Monitor workers with [flower](https://flower.readthedocs.io/en/latest/)
 
 ```bash
@@ -53,10 +55,15 @@ $: celery -A celery_tasks flower --port=5555
 $: cd data_pipeline_processor/query_service/
 $: celery -A query_celery_tasks worker --loglevel=info
 ```
+*HOWTO query examples
 
 ...
 ## Transform data
+
+*HOWTO transform data examples
 ...
 ## Service performance
+
+
 ...
 ## Further considerations
