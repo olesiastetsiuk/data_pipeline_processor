@@ -31,7 +31,7 @@ POSTGRES_CONFIG = {
     'port': 5432
 }
 
-TABLE_NAME = 'test'
+POSTGRE_TABLE_NAME = 'test'
 
 #id,gender,masterCategory,subCategory,articleType,baseColour,season,year,usage,productDisplayName
 
@@ -48,6 +48,8 @@ CREATE_TABLE_QUERY = '''CREATE TABLE test
           PRODUCTDISPLAYNAME           TEXT    NOT NULL,
           META_DATA JSONB,
           HASH_KEY TEXT); '''
+
+TABLES_NAMES_LIST_QUERY = """SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'"""
 
 CVS_ROW_INSERT_QUERY = "INSERT INTO test VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 

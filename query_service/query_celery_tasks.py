@@ -25,10 +25,6 @@ from data_workflow_api.configs import AWS_BUCKET_NAME, AWS_TABLE_NAME, DOWNLOAD_
 app = Celery('query_celery_tasks')
 app.config_from_object('celeryconfig')
 
-#16 MB of data, which can contain as many as 100 items
-
-#singe query, batch/single get, statistcs, update meta
-
 
 #@app.task
 def get_queried_data_from_s3_by_one(query, batch_size_for_postgre_query, folder_path):
@@ -66,39 +62,38 @@ def get_queried_data_from_s3_by_one(query, batch_size_for_postgre_query, folder_
                     except ClientError as e:
                         file_name = None
 
-#@app.task
-    def update_meta_data_postgre(file_key, file_path):
-        """Update file from AWS S3 storage
+@app.task
+def update_meta_data_postgre(file_key, file_path):
+    """Update meta data in Postgre column 
+
+    Note: 
+        Receives image id, updated meta data, updates column
+
+"""
+
+@app.task
+def get_stat_for_query(query, chunksize, return_pandas_df=False):
+    db_service = DbServiceConnect(POSTGRES_CONFIG)
+    with TableStyles(db_service) as postgre_table:
+        if return_pandas_df:
+            table = postgre_table.query_to_pandas_df(query, chunksize)
+            query_df = pd.DataFrame()
+            while True:
+                try:
+                    query_df = query_df.append(next(table))
+                except StopIteration:
+                    break
+            return query_df
+        
+        
     
-        Note: 
-            Receives file key, obtains file name from AWS DynamoDB,
-            update file from AWS S3 storage.
-    
-    """
 
-def get_query_for_statistics(query, return_pandas_df=False):
-    if return_pandas:
-        query_stat_df = pd.DataFrame()
-        db_service = DbServiceConnect(POSTGRES_CONFIG)
-        with TableStyles(db_service) as postgre_table:
-            with postgre_table.query_table_batch(query, batch_size_for_postgre_query) as records:
-                query_stat_df = 
-
-
-
-
-
-
-
-# @app.task
-# def put_updated_images_on_s3():
-#     pass
-
-# @app.task
-# def parse_json_column_postgre():
-#     pass
-
-#get_queried_data_from_s3_by_one("SELECT gender, season, year, meta_data, hash_key FROM test WHERE gender='Unisex' AND season='Summer';", 10, '/home/olysavra/datasqueezer/data_pipeline/data_pipeline_processor/data/download')
+#TODO 
+# add check if we get all images, compare count by query 
+# add getbatchitem for Dymamo (16 MB of data, which can contain as many as 100 items),
+# add parsing json column
+# add profiling option
+# add upload modified images to Dynamo to same hash keys but as a new attribute
 
 
 
