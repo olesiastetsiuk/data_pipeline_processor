@@ -51,17 +51,17 @@ CREATE_TABLE_QUERY = '''CREATE TABLE test
 
 TABLES_NAMES_LIST_QUERY = """SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'"""
 
-CVS_ROW_INSERT_QUERY = "INSERT INTO test VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+CVS_ROW_INSERT_QUERY = "INSERT INTO {} VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)".format(POSTGRE_TABLE_NAME)
 
-BULK_CVS_UPDATE = "COPY test (id,gender,masterCategory,subCategory,articleType,baseColour,season,year,usage,productDisplayName) FROM %s DELIMITER ','CSV HEADER;"
+BULK_CVS_UPDATE = "COPY {} (id,gender,masterCategory,subCategory,articleType,baseColour,season,year,usage,productDisplayName) FROM %s DELIMITER ','CSV HEADER;".format(POSTGRE_TABLE_NAME)
 
-SELECT_META_HASH_ID_QUERY = "select * from test"
+SELECT_META_HASH_ID_QUERY = "select id, meta_data, hash_key from {}".format(POSTGRE_TABLE_NAME)
 
-META_DATA_HASH_KEY_UPDATE_QUERY = "Update test set meta_data = %s, hash_key = %s where id = %s"
+META_DATA_HASH_KEY_UPDATE_QUERY = "Update {} set meta_data = %s, hash_key = %s where id = %s".format(POSTGRE_TABLE_NAME)
 
-CREATE_HASH_INDEX_QUERY = "CREATE INDEX dynamo_hash_key ON test USING hash (HASH_KEY);"
+CREATE_HASH_INDEX_QUERY = "CREATE INDEX dynamo_hash_key ON {} USING hash (HASH_KEY);".format(POSTGRE_TABLE_NAME)
 
-HASH_QUERY = "SELECT id, HASH_KEY FROM test"
+HASH_QUERY = "SELECT id, HASH_KEY FROM {}".format(POSTGRE_TABLE_NAME)
 
 
 

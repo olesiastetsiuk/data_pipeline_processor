@@ -12,7 +12,7 @@ from psycopg2.extras import Json
 
 from init_engine_postgre import DbServiceConnect, TableStyles
 
-from configs import AWS_BUCKET_NAME, AWS_TABLE_NAME, POSTGRES_CONFIG, DATASET_PATH, TABLE_NAME
+from configs import AWS_BUCKET_NAME, AWS_TABLE_NAME, POSTGRES_CONFIG, DATASET_PATH, POSTGRE_TABLE_NAME
 from configs import CVS_ROW_INSERT_QUERY, META_DATA_HASH_KEY_UPDATE_QUERY, HASH_QUERY, CREATE_HASH_INDEX_QUERY, SELECT_META_HASH_ID_QUERY 
 #from utils import utils
 
@@ -40,7 +40,7 @@ def load_csv_to_postgre(path, in_bulk = False):
         db_service = DbServiceConnect(POSTGRES_CONFIG)
         with TableStyles(db_service) as table:
             if in_bulk: 
-                table.bulk_cvs_update_table(DATASET_PATH['styles'], TABLE_NAME) #hardcoded tablename, could be refactored to more general case
+                table.bulk_cvs_update_table(DATASET_PATH['styles'], POSTGRE_TABLE_NAME, size=8192) #hardcoded tablename, could be refactored to more general case
             else: 
                 table.update_table_from_cvs_by_row(DATASET_PATH['styles'], CVS_ROW_INSERT_QUERY) #hardcoded insert query, same
                 #TODO fix for nonexisting values in columns
@@ -118,12 +118,10 @@ def put_data_s3_by_record_from_query(path):
 
 
 
-put_data_s3_by_record_from_query('/home/olysavra/datasqueezer/IM/139630_329006_bundle_archive/fashion-dataset')
-
-# csv to dummy vars
+#TODO
 # folder with jsons to table with id and JSONB column to bulk load
-# load csv by chunks
 # folder with images to table with id and hash value to bulk load
 # how to BatchWriteItem + batch load on s3? 
-# update dynamo only by images + hash without postgre query - how to preserve consistency? 
+# update dynamo only by images + hash without postgre query - how to preserve consistency?
+# csv to dummy vars(?)
 # lambda usages

@@ -5,7 +5,7 @@ from contextlib import contextmanager
 
 import pandas as pd
 
-from configs import POSTGRES_CONFIG, POSTGRE_TABLE_NAME, CREATE_TABLE_QUERY, DATASET_PATH, CVS_ROW_INSERT_QUERY, TABLES_NAMES_LIST_QUERY
+from .configs import POSTGRES_CONFIG, POSTGRE_TABLE_NAME, CREATE_TABLE_QUERY, DATASET_PATH, CVS_ROW_INSERT_QUERY, TABLES_NAMES_LIST_QUERY
 
 
 class DbServiceConnect:
@@ -78,12 +78,12 @@ class TableStyles(TableBase):
         except (Exception, psycopg2.DatabaseError) as error :
             print ("Error while csv update by row PostgreSQL table", error)
         
-    def bulk_cvs_update_table(self, csv_path, table_name):
+    def bulk_cvs_update_table(self, csv_path, table_name, chunk):
         try:
             with open(csv_path, 'r') as data: 
                 reader = csv.reader(data)
                 next(reader)
-                self.cursor.copy_from(data, table_name, sep=',', size=8192)
+                self.cursor.copy_from(data, table_name, sep=',', size=chunk)
                 self.conn.commit()            
 
         except (Exception, psycopg2.DatabaseError) as error :
@@ -161,14 +161,6 @@ if __name__ == "__main__":
         table.create_table(CREATE_TABLE_QUERY, POSTGRE_TABLE_NAME)
         tables_list = table.list_tables(TABLES_NAMES_LIST_QUERY)
         print("Tables in DB: {}".format(tables_list))
-
-
-
-
-
-
-
-
                     
 
 

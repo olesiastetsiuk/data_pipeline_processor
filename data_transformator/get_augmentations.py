@@ -95,10 +95,6 @@ def augment_and_show(aug, image, mask=None, bboxes=[], categories=[], category_i
         
     return augmented['image'], augmented['mask'], augmented['bboxes']
 
-# def find_in_dir(dirname):
-#     return [os.path.join(dirname, fname) for fname in sorted(os.listdir(dirname))]
-
-
 def crop_transformation(image, percent_of_height, percent_of_width):
 
     h, w, c = image.shape

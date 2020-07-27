@@ -38,8 +38,18 @@ $: celery -A celery_tasks worker --loglevel=info
 * Run tasks
 ```bash
 $: cd data_pipeline_processor/data_workflow_api
-$: 
+$: python
 ```
+    from query_celery_tasks import get_queried_data_from_s3_by_one, get_query_for_inspection, update_meta_data_postgre
+    
+    from queries_config import WOMEN_ACCESSORIES_CASUAL_QUERY, MAN_OPEN_SHOES_FALL, UNISEX_SUMMER, META_DATA_UPDATE_QUERY, PATH_TO_SAVE_CSV, PATH_TO_SAVE_IMAGES
+    
+    get_queried_data_from_s3_by_one(WOMEN_ACCESSORIES_CASUAL_QUERY, 100, PATH_TO_SAVE_IMAGES)
+
+    folder_for_images = get_queried_data_from_s3_by_one.apply_async(queue='low_priority', args=(WOMEN_ACCESSORIES_CASUAL_QUERY, 100, PATH_TO_SAVE_IMAGES))
+    folder_for_images.ready()
+    folder_for_images.get(timeout=10)
+    
 *HOWTO ingest data examples
 
 * Monitor workers with [flower](https://flower.readthedocs.io/en/latest/)
