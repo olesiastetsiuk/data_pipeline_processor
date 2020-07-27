@@ -1,6 +1,7 @@
 import psycopg2
 import csv
 import traceback
+from contextlib import contextmanager
 
 from configs import POSTGRES_CONFIG, TABLE_NAME, CREATE_TABLE_QUERY, DATASET_PATH, CVS_ROW_INSERT_QUERY
 
@@ -79,7 +80,7 @@ class TableStyles(TableBase):
         except (Exception, psycopg2.DatabaseError) as error :
             print ("Error while csv bulk update PostgreSQL table", error)
     
-    def query_table(self, query):
+    def query_table_all(self, query):
 
         records = None
         try:          
@@ -93,6 +94,28 @@ class TableStyles(TableBase):
         except (Exception, psycopg2.DatabaseError) as error :
             print ("Error while fetching data from PostgreSQL", error)
         return records
+
+    def batch_generator(self, cursor, batch_size):
+        while True: 
+            records = cursor.fetchmany(batch_size)
+            if not records:
+                break
+            yield records
+
+    @contextmanager
+    def query_table_batch(self, query, batch_size):
+        try:          
+            self.cursor.execute(query)
+            if self.cursor.statusmessage:
+                yield self.batch_generator(self.cursor, batch_size)
+                print("Batch query '{}' successfully executed in PostgreSQL".format(query))
+                
+            else: 
+                print("Nothing to batch fetch by query {}".format(query))
+
+        except (Exception, psycopg2.DatabaseError) as error :
+            print ("Error while batch fetching data from PostgreSQL", error)
+            
     
     def update_table_records(self, update_query, *args): #id must be the last
         try:            
@@ -118,6 +141,12 @@ if __name__ == "__main__":
     db_service = DbServiceConnect(POSTGRES_CONFIG)    
     with TableStyles(db_service) as table:
         table.create_table(CREATE_TABLE_QUERY, TABLE_NAME)
+        # with table.query_table_batch("SELECT gender, season, year, hash_key, meta_data FROM test WHERE gender='Unisex' AND season='Summer';", 1000) as batch_query:
+            
+        #     for batch in batch_query:
+        #         for record in batch_query:
+        #             print(record)
+
 
 
 

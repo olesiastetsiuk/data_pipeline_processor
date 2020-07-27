@@ -17,6 +17,6 @@ WOMEN_ACCESSORIES_CASUAL_QUERY = "SELECT * FROM table_name WHERE gender='Women' 
 
 MAN_OPEN_SHOES_FALL = "SELECT * FROM table_name WHERE gender='Men' AND (subCategory='Sandal' OR subCategory= 'Flip Flops') AND season='Fall'"
 
-UNISEX_SUMMER = "SELECT gender, season, year, hash_key, meta_data FROM table_name WHERE gender='Unisex' AND season='Summer';"
+UNISEX_SUMMER = "SELECT gender, season, year, meta_data, hash_key FROM table_name WHERE gender='Unisex' AND season='Summer';"
 
 
