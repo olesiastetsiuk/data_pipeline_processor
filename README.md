@@ -35,9 +35,10 @@ $: python3 init_engine_postgre.py
 $: cd data_pipeline_processor/data_workflow_api
 $: celery -A celery_tasks worker --loglevel=info
 ```
-* Run tasks    
     
 * HOWTO [ingest data examples](https://github.com/olesiastetsiuk/data_pipeline_processor/blob/master/data_processor/data_workflow_api/data_ingest.ipynb)
+
+
     from celery_tasks import load_csv_to_postgre, load_meta_data_to_postgre, put_data_s3_by_record_from_query
     
     path_to_dataset = '' # make sure is has subfolders named styles and images
@@ -63,6 +64,7 @@ $: celery -A query_celery_tasks worker --loglevel=info
 ```
 * HOWTO [query examples](https://github.com/olesiastetsiuk/data_pipeline_processor/blob/master/data_processor/query_service/query.ipynb)
 
+
     from query_celery_tasks import get_queried_data_from_s3_by_one, get_query_for_inspection, update_meta_data_postgre
     
     from queries_config import WOMEN_ACCESSORIES_CASUAL_QUERY, MAN_OPEN_SHOES_FALL, UNISEX_SUMMER, META_DATA_UPDATE_QUERY, PATH_TO_SAVE_CSV, PATH_TO_SAVE_IMAGES
@@ -72,7 +74,7 @@ $: celery -A query_celery_tasks worker --loglevel=info
     folder_for_images = get_queried_data_from_s3_by_one.apply_async(queue='low_priority', args=(WOMEN_ACCESSORIES_CASUAL_QUERY, 100, PATH_TO_SAVE_IMAGES))
     folder_for_images.ready()
     folder_for_images.get(timeout=10)
-...
+
 ## Transform data
 For getting features for queried images we use `MMFashion` which is an open source visual fashion analysis toolbox based on [PyTorch](https://pytorch.org/). It is a part of the [open-mmlab](https://github.com/open-mmlab) project developed by [Multimedia Lab, CUHK](http://mmlab.ie.cuhk.edu.hk/).
 
@@ -86,11 +88,12 @@ python setup.py install
 
 * HOWTO work with quiried images
 
+
     from data_transformator.exploratory_data_analysis import plot_random_images_from_folder
     from data_transformator.get_augmentations import augment_and_show, crop_transformation, resize_transformation
     from data_transformator.add_features_to_meta import add_landmarks
-...
+
 ## Service performance
-[Tests](https://github.com/olesiastetsiuk/data_pipeline_processor/tree/master/data_processor/tests) 
+* [Tests](https://github.com/olesiastetsiuk/data_pipeline_processor/tree/master/data_processor/tests) 
 
 ## Further considerations
