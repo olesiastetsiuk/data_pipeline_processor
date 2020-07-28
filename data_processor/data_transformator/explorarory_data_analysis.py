@@ -6,7 +6,7 @@ import cv2
 
 def plot_random_images_from_folder(path, sample_size=9):
 
-    path = glob(path)
+    path = glob(path+"/*.jpg")
     r = random.sample(path,sample_size)
 
     plt.figure(figsize=(20,20))
