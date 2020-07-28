@@ -10,11 +10,10 @@ from celery import Celery
 
 from psycopg2.extras import Json
 
-from init_engine_postgre import DbServiceConnect, TableStyles
+from .init_engine_postgre import DbServiceConnect, TableStyles
 
-from configs import AWS_BUCKET_NAME, AWS_TABLE_NAME, POSTGRES_CONFIG, DATASET_PATH, POSTGRE_TABLE_NAME
-from configs import CVS_ROW_INSERT_QUERY, META_DATA_HASH_KEY_UPDATE_QUERY, HASH_QUERY, CREATE_HASH_INDEX_QUERY, SELECT_META_HASH_ID_QUERY 
-#from utils import utils
+from .configs import AWS_BUCKET_NAME, AWS_TABLE_NAME, POSTGRES_CONFIG, DATASET_PATH, POSTGRE_TABLE_NAME
+from .configs import CVS_ROW_INSERT_QUERY, META_DATA_HASH_KEY_UPDATE_QUERY, HASH_QUERY, CREATE_HASH_INDEX_QUERY, SELECT_META_HASH_ID_QUERY 
 
 app = Celery('celery_tasks')
 app.config_from_object('celeryconfig')
@@ -42,10 +41,11 @@ def load_csv_to_postgre(path, in_bulk = False):
             if in_bulk: 
                 table.bulk_cvs_update_table(DATASET_PATH['styles'], POSTGRE_TABLE_NAME, size=8192) #hardcoded tablename, could be refactored to more general case
             else: 
-                table.update_table_from_cvs_by_row(DATASET_PATH['styles'], CVS_ROW_INSERT_QUERY) #hardcoded insert query, same
+                table.update_table_from_cvs_by_row(path, CVS_ROW_INSERT_QUERY) #hardcoded insert query
                 #TODO fix for nonexisting values in columns
     except Exception as e:
         print("Exception '{}' happened during load cvs to postgre celery task".format(e))
+    return path
     
 
 @app.task
@@ -75,6 +75,7 @@ def load_meta_data_to_postgre(path):
             table.create_index_from_column(CREATE_HASH_INDEX_QUERY, 'HASH_KEY')
     except Exception as e:
         print("Exception '{}' happened during updating meta and hash columns in postgre celery task".format(e))
+    return path
 
 
 @app.task
@@ -89,7 +90,6 @@ def put_data_s3_by_record_from_query(path):
     
     """
 
-    #imgs_files_path = path['images']
     imgs_files_path = path +'/images/'
 
     try:
@@ -115,6 +115,7 @@ def put_data_s3_by_record_from_query(path):
 
     except ClientError as e:
         print("Error {} while put data to S3".format(e))
+    return path
 
 
 
@@ -123,5 +124,4 @@ def put_data_s3_by_record_from_query(path):
 # folder with images to table with id and hash value to bulk load
 # how to BatchWriteItem + batch load on s3? 
 # update dynamo only by images + hash without postgre query - how to preserve consistency?
-# csv to dummy vars(?)
-# lambda usages
+# csv to dummy vars

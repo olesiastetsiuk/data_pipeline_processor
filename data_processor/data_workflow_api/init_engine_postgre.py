@@ -9,10 +9,19 @@ from .configs import POSTGRES_CONFIG, POSTGRE_TABLE_NAME, CREATE_TABLE_QUERY, DA
 
 
 class DbServiceConnect:
+    """
+    Class to separate connect to Postgre DB. 
+    To initialize requires path to config in dictionary with keys 'user','password','host','dbname' ,'port'. 
+    """
     def __init__(self, postgres_config):
         self.conn = psycopg2.connect(**postgres_config)  
 
 class TableBase:
+    """
+    Base class for tables in postgre. 
+    To initialize requires instance of DbServiceConnect. 
+
+    """
     def __init__(self, dbservice):
         self.conn = dbservice.conn
         self.cursor =  self.conn.cursor()
@@ -49,6 +58,9 @@ class TableStyles(TableBase):
         super().__init__(db_service)
     
     def create_table(self, table_query, table_name):
+        """
+        Method to create table. Input table query with table schema and tabel name. 
+        """
         try:
 
             self.cursor.execute(table_query)
@@ -59,6 +71,9 @@ class TableStyles(TableBase):
             print ("Error while creating PostgreSQL table", error)
         
     def update_table_from_cvs_by_row(self, csv_path, insert_query):
+        """
+        Method to update existing table from cvs file row by row
+        """
         try:
 
             with open(csv_path, 'r') as data:
@@ -79,6 +94,9 @@ class TableStyles(TableBase):
             print ("Error while csv update by row PostgreSQL table", error)
         
     def bulk_cvs_update_table(self, csv_path, table_name, chunk):
+        """
+        Method to bulk update table from cvs file
+        """
         try:
             with open(csv_path, 'r') as data: 
                 reader = csv.reader(data)
@@ -90,12 +108,15 @@ class TableStyles(TableBase):
             print ("Error while csv bulk update PostgreSQL table", error)
     
     def query_table_all(self, query):
+        """
+        Query table with fetchall()
+        """
 
         records = None
         try:          
             self.cursor.execute(query)
             if self.cursor.statusmessage:
-                records = self.cursor.fetchall() #fetchone(), fetchmany(SIZE)
+                records = self.cursor.fetchall()
                 print("Query '{}' successfully executed in PostgreSQL.".format(query))
             else: 
                 print("Nothing to fetch by query {}".format(query))
@@ -113,6 +134,10 @@ class TableStyles(TableBase):
 
     @contextmanager
     def query_table_batch(self, query, batch_size):
+        """
+        Method to query table by batch
+        """
+
         try:          
             self.cursor.execute(query)
             if self.cursor.statusmessage:
@@ -127,6 +152,10 @@ class TableStyles(TableBase):
             
     
     def update_table_records(self, update_query, *args): #id must be the last
+        """
+        Method to update table by query. ID must be the last argument. 
+        """
+
         try:            
             self.cursor.execute(update_query, *args)
             self.conn.commit()

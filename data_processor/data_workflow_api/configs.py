@@ -4,17 +4,11 @@ AWS_BUCKET_NAME = 'fashionstyles'
 # AWS DynamoDB table name
 AWS_TABLE_NAME = 'fashionstyles'
 # Path for temporary storage
-STORAGE_PATH = '/home/olysavra/datasqueezer/data_pipeline/data_pipeline_processor/data/'
+STORAGE_PATH = '/data/'
 # Path for storage uploaded files
 UPLOAD_PATH = STORAGE_PATH + '/upload/'
 # Path for storage downloaded files
 DOWNLOAD_PATH = STORAGE_PATH + '/download/'
-
-# DATASET_PATH = {
-#     'styles.csv': STORAGE_PATH + 'fashion_dataset/styles_sample.csv', 
-#     'images': STORAGE_PATH+ 'fashion_dataset/images/',
-#     'meta_files': STORAGE_PATH+ 'fashion_dataset/styles/'
-# }
 
 DATASET_PATH = {
     'styles': STORAGE_PATH + 'fashion_dataset/styles_sample.csv', 
@@ -50,6 +44,7 @@ CREATE_TABLE_QUERY = '''CREATE TABLE test
           HASH_KEY TEXT); '''
 
 TABLES_NAMES_LIST_QUERY = """SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'"""
+
 
 CVS_ROW_INSERT_QUERY = "INSERT INTO {} VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)".format(POSTGRE_TABLE_NAME)
 
