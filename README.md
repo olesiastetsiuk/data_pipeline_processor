@@ -74,12 +74,6 @@ $: celery -A query_celery_tasks worker --loglevel=info
     folder_for_images.get(timeout=10)
 ...
 ## Transform data
-
-
-*HOWTO get augmentations for queried images
-
-
-
 For getting features for queried images we use `MMFashion` which is an open source visual fashion analysis toolbox based on [PyTorch](https://pytorch.org/). It is a part of the [open-mmlab](https://github.com/open-mmlab) project developed by [Multimedia Lab, CUHK](http://mmlab.ie.cuhk.edu.hk/).
 
 ## Installation
@@ -90,10 +84,11 @@ cd mmfashion
 python setup.py install
 ```
 
-*HOWTO get features from images
-- examples
+*HOWTO work with quiried images
 
-
+    from data_transformator.exploratory_data_analysis import plot_random_images_from_folder
+    from data_transformator.get_augmentations import augment_and_show, crop_transformation, resize_transformation
+    from data_transformator.add_features_to_meta import add_landmarks
 ...
 ## Service performance
 

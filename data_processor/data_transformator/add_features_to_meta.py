@@ -11,7 +11,7 @@ from mmfashion.utils import get_img_tensor
 
 
 
-def get_landmarks(config, queried_images_path, checkpoint, use_cuda=True):
+def add_landmarks(config, queried_images_path, checkpoint, use_cuda=True):
     seed = 0
     torch.manual_seed(seed)
     if torch.cuda.is_available():
