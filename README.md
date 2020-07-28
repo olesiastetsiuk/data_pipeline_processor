@@ -37,7 +37,7 @@ $: celery -A celery_tasks worker --loglevel=info
 ```
 * Run tasks    
     
-*HOWTO [ingest data examples](https://github.com/olesiastetsiuk/data_pipeline_processor/blob/master/data_processor/data_workflow_api/data_ingest.ipynb)
+* HOWTO [ingest data examples](https://github.com/olesiastetsiuk/data_pipeline_processor/blob/master/data_processor/data_workflow_api/data_ingest.ipynb)
     from celery_tasks import load_csv_to_postgre, load_meta_data_to_postgre, put_data_s3_by_record_from_query
     
     path_to_dataset = '' # make sure is has subfolders named styles and images
@@ -61,7 +61,7 @@ $: celery -A celery_tasks flower --port=5555
 $: cd data_pipeline_processor/query_service/
 $: celery -A query_celery_tasks worker --loglevel=info
 ```
-*HOWTO [query examples](https://github.com/olesiastetsiuk/data_pipeline_processor/blob/master/data_processor/query_service/query.ipynb)
+* HOWTO [query examples](https://github.com/olesiastetsiuk/data_pipeline_processor/blob/master/data_processor/query_service/query.ipynb)
 
     from query_celery_tasks import get_queried_data_from_s3_by_one, get_query_for_inspection, update_meta_data_postgre
     
@@ -84,7 +84,7 @@ cd mmfashion
 python setup.py install
 ```
 
-*HOWTO work with quiried images
+* HOWTO work with quiried images
 
     from data_transformator.exploratory_data_analysis import plot_random_images_from_folder
     from data_transformator.get_augmentations import augment_and_show, crop_transformation, resize_transformation
