@@ -5,6 +5,8 @@ import cv2
 
 
 def plot_random_images_from_folder(path, sample_size=9):
+    """Function which plot 9 (by default) random images from a specified foldr. 
+    """
 
     path = glob(path+"/*.jpg")
     r = random.sample(path,sample_size)

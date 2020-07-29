@@ -8,4 +8,6 @@ def celery_tasks(request):
     celery_tasks.conf.update(CELERY_ALWAYS_EAGER=True)
     return celery_tasks
 
+#TODO design test to test celery tasks
+
     

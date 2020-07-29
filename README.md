@@ -88,7 +88,6 @@ python setup.py install
 
 * HOWTO work with quiried images
 
-
     from data_transformator.exploratory_data_analysis import plot_random_images_from_folder
     from data_transformator.get_augmentations import augment_and_show, crop_transformation, resize_transformation
     from data_transformator.add_features_to_meta import add_landmarks

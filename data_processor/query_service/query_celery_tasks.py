@@ -103,11 +103,11 @@ def append_meta_data_postgre(update_meta_query, meta_data_json_path):
 
 
 #TODO 
-## add getbatchitem for Dymamo (16 MB of data, which can contain as many as 100 items)
+## add getbatchitem for Dymamo (16 MB of data, which can contain as many as 100 items) + getbatch from s3
 # check if we get all images, compare count by query
-# checks for consistency 
-# add batch update meta
 # add parsing json column
+# checks for consistency 
+# add batch update meta data
 # add profiling option/decorator
 # add upload modified images to Dynamo to same hash keys but as a new attribute
 

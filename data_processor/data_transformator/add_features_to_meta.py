@@ -7,11 +7,16 @@ from mmcv import Config
 from mmcv.runner import load_checkpoint
 
 from mmfashion.models import build_landmark_detector
+#from mmfashion.models import build_attr_predictor, build_fashion_recommender
 from mmfashion.utils import get_img_tensor   
 
 
 
 def add_landmarks(config, queried_images_path, checkpoint, use_cuda=True):
+    """
+    Function to save predicted for queried image landmarks to json file with the same name as an image.
+        Receives config for model, path with images, path to downloaded checkpoint. 
+    """
     seed = 0
     torch.manual_seed(seed)
     if torch.cuda.is_available():
@@ -53,6 +58,6 @@ def add_landmarks(config, queried_images_path, checkpoint, use_cuda=True):
     return queried_images_path
 
 
-
+#TODO add attribures predictor, add fashion recommender
 
 
