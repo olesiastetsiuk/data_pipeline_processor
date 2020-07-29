@@ -32,13 +32,15 @@ $: python3 init_engine_postgre.py
 
 * Run celery:
 ```bash
-$: cd data_pipeline_processor/data_workflow_api
+$: cd /data_pipeline/data_pipeline_processor/data_processor/data_workflow_api
 $: celery -A celery_tasks worker --loglevel=info
 ```
     
 * HOWTO [ingest data examples](https://github.com/olesiastetsiuk/data_pipeline_processor/blob/master/data_processor/data_workflow_api/data_ingest.ipynb)
 
 
+    
+    
     from celery_tasks import load_csv_to_postgre, load_meta_data_to_postgre, put_data_s3_by_record_from_query
     
     path_to_dataset = '' # make sure is has subfolders named styles and images
@@ -60,12 +62,14 @@ $: celery -A celery_tasks flower --port=5555
 ## Query data and save results to a folder
 
 ```bash
-$: cd data_pipeline_processor/query_service/
+$: cd /data_pipeline/data_pipeline_processor/data_processor/query_service
 $: celery -A query_celery_tasks worker --loglevel=info
 ```
 * HOWTO [query examples](https://github.com/olesiastetsiuk/data_pipeline_processor/blob/master/data_processor/query_service/query.ipynb)
 
 
+    
+    
     from query_celery_tasks import get_queried_data_from_s3_by_one, get_query_for_inspection, update_meta_data_postgre
     
     from queries_config import WOMEN_ACCESSORIES_CASUAL_QUERY, MAN_OPEN_SHOES_FALL, UNISEX_SUMMER, META_DATA_UPDATE_QUERY, PATH_TO_SAVE_CSV, PATH_TO_SAVE_IMAGES
@@ -90,6 +94,8 @@ python setup.py install
 * HOWTO [work with quiried images](https://github.com/olesiastetsiuk/data_pipeline_processor/blob/master/data_processor/query_service/query.ipynb)
 
    
+    
+    
     from data_processor.data_transformator.exploratory_data_analysis import plot_random_images_from_folder
     from data_processor.data_transformator.get_augmentations import random_crop_transformation, resize_transformation
     from data_processor.data_transformator.add_features_to_meta import add_landmarks
@@ -100,8 +106,8 @@ python setup.py install
 
 ## Further considerations
 
-- On the stage of ingesting big dataset to Postgre and to Dymano: cut files by parts, use batch put item
-- On the stage of working with query results: process query batches
-- Properly set up celery workers
-- get use of [ipyparallel](https://ipyparallel.readthedocs.io/)
-- get use of [elyra](https://elyra.readthedocs.io/)
+* On the stage of ingesting big dataset to Postgre and to Dymano: cut files by parts, use batch put item
+* On the stage of working with query results: process query batches
+* Properly set up celery workers
+* get use of [ipyparallel](https://ipyparallel.readthedocs.io/)
+* get use of [elyra](https://elyra.readthedocs.io/)

@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(0, '/data_pipeline/data_pipeline_processor')
+sys.path.insert(0, '/home/olysavra/datasqueezer/data_pipeline/data_pipeline_processor')
 
 import os
 import json
