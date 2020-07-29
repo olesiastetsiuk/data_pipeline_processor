@@ -36,7 +36,7 @@ $: cd /data_pipeline/data_pipeline_processor/data_processor/data_workflow_api
 $: celery -A celery_tasks worker --loglevel=info
 ```
     
-* HOWTO [ingest data examples](https://github.com/olesiastetsiuk/data_pipeline_processor/blob/master/data_processor/data_workflow_api/data_ingest.ipynb)
+HOWTO [ingest data examples](https://github.com/olesiastetsiuk/data_pipeline_processor/blob/master/data_processor/data_workflow_api/data_ingest.ipynb)
 
 
     
@@ -65,7 +65,7 @@ $: celery -A celery_tasks flower --port=5555
 $: cd /data_pipeline/data_pipeline_processor/data_processor/query_service
 $: celery -A query_celery_tasks worker --loglevel=info
 ```
-* HOWTO [query examples](https://github.com/olesiastetsiuk/data_pipeline_processor/blob/master/data_processor/query_service/query.ipynb)
+HOWTO [query examples](https://github.com/olesiastetsiuk/data_pipeline_processor/blob/master/data_processor/query_service/query.ipynb)
 
 
     
@@ -91,7 +91,7 @@ cd mmfashion
 python setup.py install
 ```
 
-* HOWTO [work with quiried images](https://github.com/olesiastetsiuk/data_pipeline_processor/blob/master/data_processor/query_service/query.ipynb)
+HOWTO [work with quiried images](https://github.com/olesiastetsiuk/data_pipeline_processor/blob/master/data_processor/query_service/query.ipynb)
 
    
     
