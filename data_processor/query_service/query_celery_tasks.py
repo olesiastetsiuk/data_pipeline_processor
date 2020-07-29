@@ -1,3 +1,6 @@
+import sys
+sys.path.insert(0, '/data_pipeline/data_pipeline_processor')
+
 import os
 import json
 import glob
@@ -10,8 +13,8 @@ from botocore.exceptions import ClientError
 from celery import Celery
 import psycopg2
 
-from data_workflow_api.init_engine_postgre import DbServiceConnect, TableStyles
-from data_workflow_api.configs import AWS_BUCKET_NAME, AWS_TABLE_NAME, DOWNLOAD_PATH, POSTGRES_CONFIG, POSTGRE_TABLE_NAME
+from data_processor.data_workflow_api.init_engine_postgre import DbServiceConnect, TableStyles
+from data_processor.data_workflow_api.configs import AWS_BUCKET_NAME, AWS_TABLE_NAME, DOWNLOAD_PATH, POSTGRES_CONFIG, POSTGRE_TABLE_NAME
 from queries_config import META_DATA_UPDATE_QUERY
 
 

@@ -37,7 +37,7 @@ model = dict(
         outchannels=2,
         landmark_num=landmark_num,
         loss_regress=dict(type='MSELoss', ratio=1, reduction='none')),
-    pretrained='data_pipeline_processor/data_processor/data_transformator/pretrained_models/checkpoint/vgg16-397923af.pth')
+    pretrained='/home/olysavra/datasqueezer/data_pipeline/data_pipeline_processor/data_processor/data_transformator/pretrained_models/checkpoint/vgg16-397923af.pth')
 
 # dataset settings
 dataset_type = 'Landmark_Detect'
@@ -92,7 +92,7 @@ gpus = dict(train=[0, 1, 2, 3], test=[0, 1, 2, 3])
 work_dir = 'checkpoint/LandmarkDetect/vgg/global'
 print_interval = 20  # interval to print information
 save_interval = 10
-init_weights_from = 'data_pipeline_processor/data_processor/data_transformator/pretrained_models/checkpoint/vgg16-397923af.pth'
+init_weights_from = '/home/olysavra/datasqueezer/data_pipeline/data_pipeline_processor/data_processor/data_transformator/pretrained_models/checkpoint/vgg16-397923af.pth'
 load_from = None
 resume_from = None
 checkpoint = None

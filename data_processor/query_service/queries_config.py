@@ -1,5 +1,5 @@
 
-from data_workflow_api.configs import POSTGRE_TABLE_NAME
+from data_processor.data_workflow_api.configs import POSTGRE_TABLE_NAME
 
 
 #queries

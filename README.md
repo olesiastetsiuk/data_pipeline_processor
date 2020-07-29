@@ -53,6 +53,7 @@ $: celery -A celery_tasks worker --loglevel=info
 
 ```bash
 $: cd data_pipeline_processor/data_workflow_api
+$: pip install wheel flower
 $: celery -A celery_tasks flower --port=5555
 ```
 
@@ -86,13 +87,21 @@ cd mmfashion
 python setup.py install
 ```
 
-* HOWTO work with quiried images
+* HOWTO [work with quiried images](https://github.com/olesiastetsiuk/data_pipeline_processor/blob/master/data_processor/query_service/query.ipynb)
 
-    from data_transformator.exploratory_data_analysis import plot_random_images_from_folder
-    from data_transformator.get_augmentations import augment_and_show, crop_transformation, resize_transformation
-    from data_transformator.add_features_to_meta import add_landmarks
+   
+    from data_processor.data_transformator.exploratory_data_analysis import plot_random_images_from_folder
+    from data_processor.data_transformator.get_augmentations import random_crop_transformation, resize_transformation
+    from data_processor.data_transformator.add_features_to_meta import add_landmarks
 
 ## Service performance
 * [Tests](https://github.com/olesiastetsiuk/data_pipeline_processor/tree/master/data_processor/tests) 
+* TODO Performance 
 
 ## Further considerations
+
+- On the stage of ingesting big dataset to Postgre and to Dymano: cut files by parts, use batch put item
+- On the stage of working with query results: process query batches
+- Properly set up celery workers
+- get use of [ipyparallel](https://ipyparallel.readthedocs.io/)
+- get use of [elyra](https://elyra.readthedocs.io/)
