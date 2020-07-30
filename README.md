@@ -9,7 +9,10 @@ $: sudo apt-get install rabbitmq-server
 
 * Python dependencies:
 ```bash
-$: cd 
+$: cd pipeline_processor
+$: git clone https://github.com/olesiastetsiuk/data_pipeline_processor.git
+$: python3.6 -m venv venv
+$: source venv/bin/activate
 $: sudo pip install -r requirements.txt
 ```
 
@@ -62,7 +65,7 @@ $: celery -A celery_tasks flower --port=5555
 ## Query data and save results to a folder
 
 ```bash
-$: cd /data_pipeline/data_pipeline_processor/data_processor/query_service
+$: cd data_pipeline_processor/data_processor/query_service
 $: celery -A query_celery_tasks worker --loglevel=info
 ```
 HOWTO [query examples](https://github.com/olesiastetsiuk/data_pipeline_processor/blob/master/data_processor/query_service/query.ipynb)
@@ -104,6 +107,11 @@ HOWTO [work with quiried images](https://github.com/olesiastetsiuk/data_pipeline
 * [Tests](https://github.com/olesiastetsiuk/data_pipeline_processor/tree/master/data_processor/tests) 
 * TODO Performance 
 
+## To test service
+
+
+* download dataset from [here](https://www.kaggle.com/paramaggarwal/fashion-product-images-dataset/data) to /data_pipeline_processor/data
+
 ## Further considerations
 
 * On the stage of ingesting big dataset to Postgre and to Dymano: cut files by parts, use batch put item
@@ -111,3 +119,4 @@ HOWTO [work with quiried images](https://github.com/olesiastetsiuk/data_pipeline
 * Properly set up celery workers
 * get use of [ipyparallel](https://ipyparallel.readthedocs.io/)
 * get use of [elyra](https://elyra.readthedocs.io/)
+* make a docker container
